@@ -124,6 +124,28 @@ kbd{display:none}
 .rqt{font-size:.78em;color:var(--acc);margin-right:.2em}
 .rq{font-size:.75em;padding:.25em .5em;background:#3a1a28;color:#ffb0bc;box-shadow:var(--edge2);margin:.12em}
 .rq.ok{background:#14492d;color:#9dffbc}
+#panel #status{background:transparent;box-shadow:none;padding:0;margin:0;gap:.6em}
+#stats,#badges{background:#120d28f8;box-shadow:var(--edge),var(--drop);padding:.55em .65em;margin:.2em}
+#reqs{padding:.6em .7em .55em;margin:.2em;background:#2a2108f5;box-shadow:inset 0 0 0 2px #ffd84a,var(--edge),var(--drop)}
+.st .sv small{font-size:.6em;color:var(--dim);margin-left:.15em}
+.st .sv .bar{display:block;height:.32em;margin-top:.3em;background:#0b0818;box-shadow:0 0 0 1px #000}
+.st .sv .bar b{display:block;height:100%;background:currentColor}
+#panel #badges .bdg{font-size:.95em;padding:.35em .7em}
+#panel #reqs .rq{font-size:.92em;padding:.32em .6em}
+#panel #badges .rqt{font-size:1em}
+#panel #reqs .rqt{font-size:1.12em}
+#panel .st .sl{font-size:.88em}
+#panel .st .sv{font-size:1.12em}
+#panel .st .sv small{font-size:.72em}
+@media (max-height:800px) and (min-width:900px){
+  #panel.ingame{top:3.6em;gap:.4em;font-size:.86em}
+  #panel #status{gap:.35em}
+  #stats,#badges{padding:.4em .55em}
+  #reqs{padding:.45em .6em .4em}
+  #card{padding:.7em .9em .8em;gap:.5em}
+  #opts .btn{padding-top:.55em;padding-bottom:.55em}
+}
+#reqs .rqt{flex-basis:100%;font-size:.95em;color:#ffd84a;margin:0 0 .2em;text-shadow:2px 2px 0 #1d1620}
 #card .tipl{font-size:.9em;color:#cfeeff;background:#12324a;padding:.5em .65em;line-height:1.5;box-shadow:var(--edge2);margin:.12em}
 #end .learn{background:#12324a;padding:.7em .9em;text-align:left;font-family:'Noto Sans KR',sans-serif;font-size:.95em;line-height:1.55;width:100%}
 #end .learn b{font-family:'NeoDunggeunmo',monospace;color:#8ee3ff;font-weight:400}
@@ -142,7 +164,7 @@ kbd{display:none}
 .goldbox{display:flex;flex-direction:column;align-items:center;gap:.5em;background:#3a2c08;color:var(--acc);box-shadow:var(--edge2);padding:.6em 1em;margin:.12em;font-size:1.05em}
 @media (min-aspect-ratio:1/1){
   body{overflow:hidden}
-  #app{width:100vw;height:100dvh;font-size:clamp(13px,1.38vw,24px)}
+  #app{width:100vw;height:100dvh;font-size:clamp(13px,min(1.38vw,2.05vh),24px)}
   #stage{position:fixed;inset:0;aspect-ratio:auto;border:0}
   #cv{object-fit:cover;object-position:50% 100%}
   #hud{padding:1em 1.2em;gap:.5em}
@@ -1626,12 +1648,13 @@ function locName(){if(loc=='home')return '집 · 반지하';if(loc=='river')retu
 function setLoc(){$('locn').innerHTML=ico('pin')+'<span>'+locName()+'</span>';$('clk').innerHTML=clockHTML();if(lastLoc!=loc){if(lastLoc)sfxLoc(loc);walkers=[];ambT=.6;lastLoc=loc;fadeT=.55}}
 function hud(){const m=monthNo();if(m!=lastSec){const ps=lastSec>0?Math.min(3,Math.floor((lastSec-1)/3)):-1;lastSec=m;$('clk').innerHTML=clockHTML();const se=seasonNo();
   if(ps>=0&&se!=ps)showCap(['🌸 봄','☀️ 여름','🍂 가을','❄️ 겨울'][se],['SPRING · 새 학기','SUMMER · 장마와 기말','AUTUMN · 바람이 차가워진다','WINTER · 롱패딩의 계절'][se])}}
+function num(v){v=Math.max(0,Math.min(100,Math.round(v)));return v+'<small>/100</small><i class="bar"><b style="width:'+v+'%"></b></i>'}
 function renderStats(){if(!$('stats'))return;
   const hv=S.health,mv=S.mood,gp=S.grades/100*4.5,fr=Math.round(S.friends/4),bv=S.bored;
   const L=[
-   {i:'heart',l:'건강',v:hv>=60?'좋음':hv>=30?'나쁨':'최악',c:hv>=60?'good':hv>=30?'warn':'bad'},
+   {i:'heart',l:'건강',v:num(hv),c:hv>=60?'good':hv>=30?'warn':'bad'},
    {i:'cap',l:'학점',v:gp.toFixed(1)+' / 4.5',c:gp>=3?'good':gp>=2?'warn':'bad'},
-   {i:mv>=60?'fgood':mv>=30?'fmid':'fbad',l:'기분',v:mv>=60?'좋음':mv>=30?'보통':'나쁨',c:mv>=60?'good':mv>=30?'warn':'bad'},
+   {i:mv>=60?'fgood':mv>=30?'fmid':'fbad',l:'기분',v:num(mv),c:mv>=60?'good':mv>=30?'warn':'bad'},
    {i:'people',l:'친구',v:fr+'명',c:fr>=8?'good':fr>=3?'warn':'bad'},
    {i:'hour',l:'지루함',v:bv<30?'없음':bv<60?'조금':bv<85?'많이':'폭발',c:bv<30?'good':bv<60?'warn':'bad'}];
   $('stats').innerHTML=L.map(x=>'<div class="st '+x.c+'"><span class="sl">'+ico(x.i)+x.l+'</span><span class="sv">'+x.v+'</span></div>').join('');
